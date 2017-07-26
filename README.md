@@ -16,9 +16,11 @@ Basic usage is simple:
 * Create a container with a unique ID to hold any links you wish to prompt screen changes. To ensure functionality if JavaScript is disabled or any libraries or plugins fail to load, I recommend setting the link's `href` attribute to the hashed id of screen the link is meant to reveal.
 * Set up the SwitchMenu after the document has loaded using `var menu = new SwitchMenu(anchor_container, [array_of_screens])`. anchor_container should be a string in the form of a CSS selector (e.g. '#nav_menu'); array_of_screens must be an array of CSS selectors in the order of their corresponding links (e.g. "['#content1', '#content2', '#content3']"). Links not meant to switch in a new screen can be set to either `null` or the string 'skip'.
 
-* [SwitchMenu Simple Example](https://jsfiddle.net/jwrunge/baxot1ub/)
-* [SwitchMenu Skipped Anchor Example](https://jsfiddle.net/jwrunge/7dpdwyq1/)
-* [Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/wvt74q5L/)
+[SwitchMenu Simple Example](https://jsfiddle.net/jwrunge/baxot1ub/)
+
+[SwitchMenu Skipped Anchor Example](https://jsfiddle.net/jwrunge/7dpdwyq1/)
+
+[Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/wvt74q5L/)
 
 ## Extra Features
 While SwitchMenu is designed to do most all the work in the background, with minimal programmer intervention, there are a few functions you may need to take advantage of, depending on how your site functions.
