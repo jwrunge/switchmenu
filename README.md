@@ -17,7 +17,9 @@ Basic usage is simple:
 * Set up the SwitchMenu after the document has loaded using `var menu = new SwitchMenu(anchor_container, [array_of_screens])`. anchor_container should be a string in the form of a CSS selector (e.g. '#nav_menu'); array_of_screens must be an array of CSS selectors in the order of their corresponding links (e.g. "['#content1', '#content2', '#content3']"). Links not meant to switch in a new screen can be set to either `null` or the string 'skip'.
 
 [SwitchMenu Simple Example](https://jsfiddle.net/jwrunge/baxot1ub/)
+
 [SwitchMenu Skipped Anchor Example](https://jsfiddle.net/jwrunge/7dpdwyq1/)
+
 [Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/wvt74q5L/)
 
 ## Extra Features
