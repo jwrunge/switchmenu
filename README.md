@@ -18,7 +18,7 @@ Basic usage is simple:
 
 * [SwitchMenu Simple Example](https://jsfiddle.net/jwrunge/baxot1ub/)
 * [SwitchMenu Skipped Anchor Example](https://jsfiddle.net/jwrunge/7dpdwyq1/)
-* [Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/baxot1ub/)
+* [Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/wvt74q5L/)
 
 ## Extra Features
 While SwitchMenu is designed to do most all the work in the background, with minimal programmer intervention, there are a few functions you may need to take advantage of, depending on how your site functions.
