@@ -16,12 +16,9 @@ Basic usage is simple:
 * Create a container with a unique ID to hold any links you wish to prompt screen changes. To ensure functionality if JavaScript is disabled or any libraries or plugins fail to load, I recommend setting the link's `href` attribute to the hashed id of screen the link is meant to reveal.
 * Set up the SwitchMenu after the document has loaded using `var menu = new SwitchMenu(anchor_container, [array_of_screens])`. anchor_container should be a string in the form of a CSS selector (e.g. '#nav_menu'); array_of_screens must be an array of CSS selectors in the order of their corresponding links (e.g. "['#content1', '#content2', '#content3']"). Links not meant to switch in a new screen can be set to either `null` or the string 'skip'.
 
-### Simple Example
-<iframe width="100%" height="300" src="//jsfiddle.net/jwrunge/baxot1ub/13/embedded/js,html,css,result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-### Example with a Skipped Anchor
-
-### Submenus Example
+* [SwitchMenu Simple Example](https://jsfiddle.net/jwrunge/baxot1ub/)
+* [SwitchMenu Skipped Anchor Example](https://jsfiddle.net/jwrunge/baxot1ub/)
+* [Submenus / Nested Menus Example](https://jsfiddle.net/jwrunge/baxot1ub/)
 
 ## Extra Features
 While SwitchMenu is designed to do most all the work in the background, with minimal programmer intervention, there are a few functions you may need to take advantage of, depending on how your site functions.
@@ -32,7 +29,7 @@ SwitchMenu establishes the following:
 * The selected link anchor in all SwitchMenus will be assigned the class `.selected`
 * All screens belonging to a particular SwitchMenu will be assigned the class `.MenuID_screen` (e.g. if the SwitchMenu's ID is `#MyMenu`, all screens belonging to `#MyMenu` will be of class `.MyMenu_screen`)
 
-See the JSFiddles on this Readme (especially under the CSS tab) for examples.
+See the JSFiddles on this Readme (especially under the CSS section) for examples.
 
 ### Resetting a Menu
 Most likely to be of value, `SwitchMenu.reset()` will restore a menu and its currently-displayed scree, to its initial value. If you are including submenus in your project (a SwitchMenu within a SwitchMenu), you may wish to call `.reset()` on a switched-out submenu when your top-level menu changes screens in order to prevent the submenu from switching back in later with the wrong screen (see example below). SwitchMenu does not automatically reset submenus when they are switched out because each SwitchMenu instance is unaware of other SwitchMenus. By comparison, see the submenu example above (which does NOT use `.reset()`.
