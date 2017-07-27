@@ -36,14 +36,14 @@ See the JSFiddles on this Readme (especially under the CSS section) for examples
 ### Resetting a Menu
 Most likely to be of value, `SwitchMenu.reset()` will restore a menu and its currently-displayed scree, to its initial value. If you are including submenus in your project (a SwitchMenu within a SwitchMenu), you may wish to call `.reset()` on a switched-out submenu when your top-level menu changes screens in order to prevent the submenu from switching back in later with the wrong screen (see example below). SwitchMenu does not automatically reset submenus when they are switched out because each SwitchMenu instance is unaware of other SwitchMenus. By comparison, see the submenu example above (which does NOT use `.reset()`.
 
-EXAMPLE HERE
+[Submenus / Nested Menus with Reset Example](https://jsfiddle.net/jwrunge/gd47y1eb/)
 
 ### Manual Switching
 You can manually switch screens and screen classes in and out of view by calling `.switchin(element_in, element_out)` on a SwitchMenu object. Likewise, a generic `switchin()` function taking the same parameters comes bundled with SwitchMenu, but can be called without creating a SwitchMenu object. Both functions can switch any element out for any other, even when calling a SwitchMenu object's member `switchin()` function; the only difference between the two is that the generic function will not alter browser history.
 
-EXAMPLE HERE
+[Manual Switching Example](https://jsfiddle.net/jwrunge/8u3smmkk/)
 
 ### Setting the Screen State
 While SwitchMenu objects automatically alter browser history via the `history` object, you can also push your own menu states to the browser using `set_state(state_array)`. `set_state()` is *not* a member function of a SwitchMenu object. To use it, pass it an array of CSS id selectors, one for each SwitchMenu on the page in the order they were declared. When you set the page's state, each SwitchMenu will switch in the id selector specified, and will record the state in browswer history.
 
-EXAMPLE HERE
+[Setting the Screen State Example](https://jsfiddle.net/jwrunge/4661n2qf/)
