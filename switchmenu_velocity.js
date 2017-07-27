@@ -3,8 +3,6 @@
 	Pass JQuery menu reference and array of options and screen elements to create_switch_menu()
 */
 
-var lastHash = null;
-
 /*
 	GENERIC SWITCH FUNCTION (does not alter history)
 */
@@ -22,15 +20,6 @@ function switchin(switch_in, switch_out) //callback = null, track_order = null)
 */
 var SwitchMenu = function(menu_selector, screens)
 {	
-	//Set a menu screen without animation
-	this.set_screen = function(switch_in, switch_out)
-	{
-		$(switch_out).hide();
-		$(switch_in).scrollTop(0);
-		$(switch_in).css('left', '0').css('opacity', '1').show();
-		menu.children('a').removeClass('selected').first().addClass('selected');
-	}
-	
 	//Switching animation
 	this.switchin = function(switch_in, switch_out, set = null) //callback = null, track_order = null)
 	{	

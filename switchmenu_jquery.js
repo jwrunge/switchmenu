@@ -4,141 +4,134 @@
 */
 
 /*
+	GENERIC SWITCH FUNCTION (does not alter history)
+*/
+function switchin(switch_in, switch_out) //callback = null, track_order = null)
+{			
+	$(switch_out).animate({left: '-10em', opacity: '0'}, 200, 'swing', function() {
+		$('html, body').scrollTop(0);
+		$(switch_in).scrollTop(0);
+		$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 200, 'swing');
+	});
+}
+
+/*
 	SWITCH MENU OBJECT
 */
-var SwitchMenu = function(menu_selector, screens, ops)
-{
-	//Handle options 
-	var settings = {
-		firstscreen: null,
-		callback: null,
-		track_order: null,
-		top: 'both',
-		body_top: 0,
-		target_top: 0,
-		body_scroll_speed: 0,
-		target_scroll_speed: 0
-	}
-	
-	if(ops !== null)
-		$.extend(settings, ops); //merge options into settings
-
-	//Array of screen order and max push
-	this.max_push = 5;
-	this.screen_order = [];
-	
-	//Ensure the menu and screens are properly set up; display error if not
-	var menu = $(menu_selector);			//Reference to the menu
-	menu.addClass('switch_menu');			//Make sure the menu knows it's a menu
-	var options = $(menu_selector + ' a'); 	//Reference to the anchors in the menu
-	var screen_class = menu.prop('id') + '_screen'; //Class for all menu subscreens
-	
-	//Set a menu screen without animation
-	this.set_screen = function(switch_in, switch_out)
-	{
-		$(switch_out).hide();
-		$(switch_in).animate({scrollTop: 0}, 1);
-		$(switch_in).css('left', '0').css('opacity', '1').show();
-		menu.children('a').removeClass('selected').first().addClass('selected');
-	}
-	
-	//Reset menu
-	this.reset = function(only_if_hidden = false) //Only if hidden is a selector
-	{
-		if(only_if_hidden && $(only_if_hidden).css('display') != 'none') //Only reset if only_hidden is false (default) --> passing a selector allows for reset without affecting only_if_hidden
-			return;
-		
-		$('.' + screen_class).hide();
-		$('.' + screen_class).first().css('opacity', '1').css('left', '0').show();
-		menu.children('a').removeClass('selected').first().addClass('selected');
-	}
-	
+var SwitchMenu = function(menu_selector, screens)
+{	
 	//Switching animation
-	this.switchin = function(switch_in, switch_out, ops) //callback = null, track_order = null)
-	{
-		var settings = {
-			callback: null,
-			track_order: null,
-			top: 'both',
-			body_top: 0,
-			target_top: 0,
-			body_scroll_speed: 0,
-			target_scroll_speed: 0
-		}
-		
-		if(ops !== null)
-			$.extend(settings, ops); //merge options into settings
-	
-		//Scroll body
-		if(settings.top == 'both' || settings.top == 'body')
-		{
-			$('html, body').animate({scrollTop: settings.body_top}, settings.body_scroll_speed); 
-		}
-		
-		//Scroll target
-		if(settings.top == 'both' || settings.top == 'target')
-		{
-			$(switch_in).animate({scrollTop: settings.target_top}, settings.target_scroll_speed);
-		}
-	
+	this.switchin = function(switch_in, switch_out, set = null) //callback = null, track_order = null)
+	{	
 		$(switch_out).animate({left: '-10em', opacity: '0'}, 200, 'swing', function() {
-			$(this).hide();	//hide switch_out after animation
-				
-			//Bring in new screen
-			$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 200, 'swing', settings.callback);
+			$('html, body').scrollTop(0);
+			$(switch_in).scrollTop(0);
+			$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 200, 'swing');
 		});
-		
-		if(settings.track_order)
-		{
-			this.screen_order.push(switch_in);
-			while(this.screen_order.length > this.max_push) this.screen_order.shift();
-		}
 	}
-
-	//Navigate back a screen
-	this.switch_nav_back = function()
+	
+	//Reset menu -- must pass the menu's selector
+	this.reset = function()
 	{
-		this.switchin(this.screen_order[this.screen_order.length - 2], this.screen_order[this.screen_order.length - 1]);
-		this.screen_order.pop();
+		//Handle page switchout
+		var screen_class = '.' + $(this.menu_selector).prop('id') + '_screen';
+		
+		this.switchin('#' + $(screen_class).first().prop('id'), screen_class);
+		
+		//Handle link reselection
+		$(this.menu_selector).children('a').removeClass('selected');
+		$(this.menu_selector).children("a[href='" + '#' + $(screen_class).first().prop('id') + "']").addClass('selected');
 	}
 	
 	//Bind event listeners to each anchor; iterate over screens to ensure specific screen is affected (not only the last in the array)
-	screenMenu_object = this;	//Set reference; this changes context in $.each()
-	$.each(screens, function(index, current_screen)
-	{
-		if(current_screen != 'skip' && current_screen != null) //Two options to skip assigning action to an anchor: 'skip' or null
-		{
-			$(current_screen).addClass(screen_class);	//Add common class
+	this.init = function()
+	{	
+		//Ensure the menu and screens are properly set up; display error if not
+		this.menu_selector = menu_selector;
+		var menu = $(this.menu_selector);			//Reference to the menu
+		menu.addClass('switch_menu');			//Make sure the menu knows it's a menu
+		var options = $(menu_selector + ' a'); 	//Reference to the anchors in the menu
+		var screen_class = menu.prop('id') + '_screen'; //Class for all menu subscreens
 		
-			$(options[index]).on('click', function(e)
+		//Set initial values
+		menu.children('a').first().addClass('selected');
+		menu.prop('data-curScreen', screens[0]);
+	
+		var screenMenuObject = this;	//Set reference; 'this' changes context in $.each()
+
+		$.each(screens, function(index, current_screen)
+		{
+			if(current_screen != 'skip' && current_screen != null) //Two options to skip assigning action to an anchor: 'skip' or null; the following is for non-skip anchors
 			{
-				e.preventDefault();		//prevents default link behavior
-				e.stopPropagation();	//prevents parent anchors from enacting default link behavior
+				$(current_screen).addClass(screen_class);	//Add common class
 				
-				if($(current_screen).css('display') == 'none')
+				if(index > 0) //Make screens after first screen visible
+					$(current_screen).css('display', 'none');
+			
+				$(options[index]).on('click', function(e)
 				{
-					screenMenu_object.switchin(current_screen, '.' + screen_class, ops);
-				}
+					e.preventDefault();		//prevents default link behavior
+					e.stopPropagation();	//prevents parent anchors from enacting default link behavior
+
+					if($(current_screen).css('display') == 'none')
+					{
+						//Update current screen
+						menu.prop('data-curScreen', current_screen);
+					
+						//Alter history
+						var pages = [];
+						$('.switch_menu').each(function()
+						{
+							pages.push($(this).prop('data-curScreen'));
+						});
+
+						history.pushState(pages, null, menu.prop('data-curScreen'));
+					
+						//Switch in new screen
+						screenMenuObject.switchin(current_screen, '.' + screen_class);
+					}
+					
+					menu.children('a').removeClass('selected');
+					$(this).addClass('selected');
+				});
+			}
+		});
+		
+		//Set screen settings
+		$(screen_class).css('position', 'relative');
+		$(screen_class).css('display', 'none');
+		$(screen_class).first().css('display', '');
+	}
+	
+	this.init(); //Initialize
+}
+
+/*
+	HANDLE STATE CHANGES
+*/
+window.addEventListener('popstate', function(e) {
+	//If there is state information, cycle back through history
+	if(e.state)
+	{
+		if(e.state)
+			set_state(e.state);
+	}
+});
+
+function set_state(state)
+{
+	$('.switch_menu').each(function(index, value)
+	{
+		if($(state[index]).css('display') == 'none')
+		{
+			if(state[index] !== null)
+			{
+				switchin(state[index], '.' + $(this).prop('id') + '_screen');
 				
-				menu.children('a').removeClass('selected');
-				$(this).addClass('selected');
-			});
+				//Handle link reselection
+				$(this).children('a').removeClass('selected');
+				$(this).children("a[href='" + state[index] + "']").addClass('selected');
+			}
 		}
-		else
-			$(current_screen).addClass(screen_class);	//Add common class
 	});
-	
-	$('.' + screen_class).css('position', 'relative');	//Ensure all screens are set to relative
-	
-	//Set first screen; default is screens[0]
-	if(settings.firstscreen != null)
-	{
-		this.screen_order.push(settings.firstscreen);
-		this.set_screen(settings.firstscreen, '.' + screen_class);
-	}
-	else
-	{
-		this.screen_order.push(screens[0]);
-		this.set_screen(screens[0], '.' + screen_class);
-	}
 }
