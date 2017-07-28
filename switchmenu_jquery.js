@@ -8,25 +8,27 @@
 */
 function switchin(switch_in, switch_out) //callback = null, track_order = null)
 {			
-	$(switch_out).animate({left: '-10em', opacity: '0'}, 200, 'swing', function() {
+	$(switch_out).animate({left: '-10em', opacity: '0'}, 300, 'swing', function() {
 		$('html, body').scrollTop(0);
 		$(switch_in).scrollTop(0);
-		$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 200, 'swing');
+		$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 300, 'swing');
+		$(this).hide();
 	});
 }
 
 /*
 	SWITCH MENU OBJECT
 */
-var SwitchMenu = function(menu_selector, screens)
+var SwitchMenu = function(menu_selector = null, screens = null)
 {	
 	//Switching animation
-	this.switchin = function(switch_in, switch_out, set = null) //callback = null, track_order = null)
+	this.switchin = function(switch_in, switch_out) //callback = null, track_order = null)
 	{	
-		$(switch_out).animate({left: '-10em', opacity: '0'}, 200, 'swing', function() {
+		$(switch_out).animate({left: '-10em', opacity: '0'}, 300, 'swing', function() {
 			$('html, body').scrollTop(0);
 			$(switch_in).scrollTop(0);
-			$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 200, 'swing');
+			$(switch_in).css('left', '10em').css('opacity', '0').show().animate({left: '0', opacity: '1.0'}, 300, 'swing');
+			$(this).hide();
 		});
 	}
 	
@@ -63,7 +65,8 @@ var SwitchMenu = function(menu_selector, screens)
 		{
 			if(current_screen != 'skip' && current_screen != null) //Two options to skip assigning action to an anchor: 'skip' or null; the following is for non-skip anchors
 			{
-				$(current_screen).addClass(screen_class);	//Add common class
+				$(current_screen).addClass(screen_class).css('position', 'relative');	//Add common class
+
 				
 				if(index > 0) //Make screens after first screen visible
 					$(current_screen).css('display', 'none');
@@ -96,11 +99,6 @@ var SwitchMenu = function(menu_selector, screens)
 				});
 			}
 		});
-		
-		//Set screen settings
-		$(screen_class).css('position', 'relative');
-		$(screen_class).css('display', 'none');
-		$(screen_class).first().css('display', '');
 	}
 	
 	this.init(); //Initialize
