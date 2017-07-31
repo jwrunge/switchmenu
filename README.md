@@ -34,6 +34,10 @@ Options can be passed in as a JavaScript object in an optional third parameter i
 * outSpeed: The duration of outAnimation. Default is 500.
 * inSpeed: The duration of inAnimation. Default is 500.
 
+[Options Example](https://jsfiddle.net/jwrunge/Le16yuhp/)
+
+NOTE: Velocity seems to get confused when passing named, predefined UI pack animations if the outAnimation and inAnimation do not complement one another (i.e., they alter different element CSS attributes). It is recommended, for example, to pair 'transition.flipXIn' with 'transition.flipXOut' unless passing specific animation properties (in which case, you have more granular control).
+
 ### Styling and Manipulation
 SwitchMenu establishes the following:
 * All SwitchMenu menus will be assigned the CSS class `.switch_menu`
