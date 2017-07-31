@@ -11,7 +11,7 @@ var currently_switching = false;
 */
 function switchin(switch_in, switch_out, options = null) //callback = null, track_order = null)
 {		
-	currently_switching = true;
+	currently_switching = true
 	
 	var settings = {scrollTarget: 'both', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
 	
@@ -19,11 +19,21 @@ function switchin(switch_in, switch_out, options = null) //callback = null, trac
 		$.extend(settings, options);
 	
 	$(switch_out).velocity(settings.outAnimation, {duration: settings.outSpeed, complete: function() {
-		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'body')
-			$('html, body').velocity('scroll', settings.scrollDuration);
+
 		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'screen')
-			$(switch_in).velocity('scroll', settings.scrollDuration);
-		$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
+			$('html, body').velocity('scroll', {duration: settings.scrollDuration, container: $(switch_in)});
+			
+		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'body')
+		{
+			$('html, body').velocity('scroll', {
+				duration: settings.scrollDuration, 
+				complete: function() {
+					$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
+				}
+			});
+		}
+		else
+			$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
 	}});
 }
 
@@ -46,13 +56,11 @@ var SwitchMenu = function(menu_selector, screens, ops = null)
 	this.reset = function()
 	{
 		//Handle page switchout
-		var screen_class = '.' + $(this.menu_selector).prop('id') + '_screen';
-		
-		switchin('#' + $(screen_class).first().prop('id'), screen_class, false);
+		switchin('#' + $('.' + this.screen_class).first().prop('id'), '.' + this.screen_class);
 		
 		//Handle link reselection
 		this.menu.children('a').removeClass('selected');
-		this.menu.children("a[href='" + '#' + $(screen_class).first().prop('id') + "']").addClass('selected');
+		this.menu.children("a[href='" + '#' + $('.' + this.screen_class).first().prop('id') + "']").addClass('selected');
 	}
 	
 	//Bind event listeners to each anchor; iterate over screens to ensure specific screen is affected (not only the last in the array)
