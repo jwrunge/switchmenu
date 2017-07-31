@@ -5,7 +5,7 @@ JQuery and Velocity plugins that allow for the creation of dynamically switching
 
 ## Versions
 * jwrunge/switchmenu_jquery.js - The original version, built on top of [JQuery](https://www.jquery.com) and using JQuery's .animate() function. It is dependent on the inclusion of JQuery before that of SwitchMenu. Velocity.js is not required.
-* jwrunge/switchmenu_velocity.js - A modified version built with [Velocity.js](http://www.velocityjs.org), which may have performance beneifits if you are already using the Velocity.js engine.
+* jwrunge/switchmenu_velocity.js - A modified version built with [Velocity.js](http://www.velocityjs.org), which may have performance beneifits if you are already using the Velocity.js engine. This version allows for alteration of the switching in and out animations, including custom switch in and out animations defined with the Velocity UI pack's RegisterEffect() function. The UI Pack *is* required for this version to work.
 
 ## Basic Usage
 Usage of the plugin is the same for all versions. For the following examples, the Velocity version is used.
@@ -25,6 +25,15 @@ Basic usage is simple:
 ## Extra Features
 While SwitchMenu is designed to do most all the work in the background, with minimal programmer intervention, there are a few functions you may need to take advantage of, depending on how your site functions.
 
+### Options
+Options can be passed in as a JavaScript object in an optional third parameter in both the SwitchMenu object and the generic switchin() function. The options you can specify are as follows:
+* scrollTarget: Scrolls to the top of a specified target. This can be set to 'body', 'screen', or 'both' to scroll to the top of either the HTML document, the screen being switched in, or both, respectively. This occurs after the previous screen is switched out and before the next screen is switched in. Default is 'both.'
+* scrollDuration: The duration of the aforementioned scroll. Default is 0.
+* outAnimation (Velocity version only): The animation used to switch out the current screen. Can be passed a JavaScript object with the CSS properties to animate (following Velocity's syntax), a named Velocity UI animation, or named animation defined with $.Velocity.RegisterEffect(). Default is "transition.slideLeftBigOut.'
+* inAnimation (Velocity version only): The animation used to transition in the next screen. Can be passed the same kinds of values as outAnimation. Default is "transition.slideRightBigIn."
+* outSpeed: The duration of outAnimation. Default is 500.
+* inSpeed: The duration of inAnimation. Default is 500.
+
 ### Styling and Manipulation
 SwitchMenu establishes the following:
 * All SwitchMenu menus will be assigned the CSS class `.switch_menu`
@@ -38,8 +47,11 @@ Most likely to be of value, `SwitchMenu.reset()` will restore a menu and its cur
 
 [Submenus / Nested Menus with Reset Example](https://jsfiddle.net/jwrunge/gd47y1eb/)
 
+### The currently_switching Flag
+The SwitchMenu plugin defines a flag variable called `currently_switching`, which is set to true when a screen switch starts and back to false when the switch ends.
+
 ### Manual Switching
-You can manually switch screens and screen classes in and out of view by calling `.switchin(element_in, element_out)` on a SwitchMenu object. Likewise, a generic `switchin()` function taking the same parameters comes bundled with SwitchMenu, but can be called without creating a SwitchMenu object. Both functions can switch any element out for any other, even when calling a SwitchMenu object's member `switchin()` function; the only difference between the two is that the generic function will not alter browser history.
+You can manually switch screens and screen classes in and out of view by calling `switchin(element_in, element_out)`. This can switch any element out for any other, despite how your SwitchMenu objects are set up. The only limitation of calling `switchin()` is that it will not alter browser history unless you explicitly call `set_state()`.
 
 [Manual Switching Example](https://jsfiddle.net/jwrunge/8u3smmkk/)
 
