@@ -3,35 +3,44 @@
 	Pass JQuery menu reference and array of options and screen elements to create_switch_menu()
 */
 
+//Switching flag
+var currently_switching = false;
+
 /*
 	GENERIC SWITCH FUNCTION (does not alter history)
 */
-function switchin(switch_in, switch_out) //callback = null, track_order = null)
-{			
-	$(switch_out).velocity('transition.slideLeftBigOut', {duration: 500, complete: function() {
-		$('html, body').scrollTop(0);
-		$(switch_in).scrollTop(0);
-		$(switch_in).velocity('transition.slideRightBigIn', 500);
+function switchin(switch_in, switch_out, options = null) //callback = null, track_order = null)
+{		
+	currently_switching = true;
+	
+	var settings = {scrollTarget: 'both', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
+	
+	if(options != null)
+		$.extend(settings, options);
+	
+	$(switch_out).velocity(settings.outAnimation, {duration: settings.outSpeed, complete: function() {
+		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'body')
+			$('html, body').velocity('scroll', settings.scrollDuration);
+		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'screen')
+			$(switch_in).velocity('scroll', settings.scrollDuration);
+		$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
 	}});
 }
 
 /*
 	SWITCH MENU OBJECT
 */
-var SwitchMenu = function(menu_selector, screens)
+var SwitchMenu = function(menu_selector, screens, ops = null)
 {	
-	//Switching animation
-	this.switchin = function(switch_in, switch_out, set = null) //callback = null, track_order = null)
-	{	
-		$(switch_out).velocity('transition.slideLeftBigOut', {duration: 500, complete: function() {
-			if(set !== null)
-			{
-				if(set.top == 'both' || set.top == 'body') $('html, body').scrollTop(0);
-				if(set.top == 'both' || set.top == 'target') $(switch_in).scrollTop(0);
-			}
-			$(switch_in).velocity('transition.slideRightBigIn', 500);
-		}});
-	}
+	this.menu_selector = menu_selector;
+	this.menu = $(this.menu_selector);		//Reference to the menu
+	this.screen_class = this.menu.prop('id') + '_screen'; //Class for all menu subscreens
+	
+	this.menu.addClass('switch_menu');			//Make sure the menu knows it's a menu
+	
+	this.settings = {scrollTarget: 'both', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
+	if(ops != null)
+		$.extend(this.settings, ops);
 	
 	//Reset menu -- must pass the menu's selector
 	this.reset = function()
@@ -39,26 +48,20 @@ var SwitchMenu = function(menu_selector, screens)
 		//Handle page switchout
 		var screen_class = '.' + $(this.menu_selector).prop('id') + '_screen';
 		
-		this.switchin('#' + $(screen_class).first().prop('id'), screen_class);
+		switchin('#' + $(screen_class).first().prop('id'), screen_class, false);
 		
 		//Handle link reselection
-		$(this.menu_selector).children('a').removeClass('selected');
-		$(this.menu_selector).children("a[href='" + '#' + $(screen_class).first().prop('id') + "']").addClass('selected');
+		this.menu.children('a').removeClass('selected');
+		this.menu.children("a[href='" + '#' + $(screen_class).first().prop('id') + "']").addClass('selected');
 	}
 	
 	//Bind event listeners to each anchor; iterate over screens to ensure specific screen is affected (not only the last in the array)
 	this.init = function()
-	{	
-		//Ensure the menu and screens are properly set up; display error if not
-		this.menu_selector = menu_selector;
-		var menu = $(this.menu_selector);			//Reference to the menu
-		menu.addClass('switch_menu');			//Make sure the menu knows it's a menu
-		var options = $(menu_selector + ' a'); 	//Reference to the anchors in the menu
-		var screen_class = menu.prop('id') + '_screen'; //Class for all menu subscreens
-		
+	{		
 		//Set initial values
-		menu.children('a').first().addClass('selected');
-		menu.prop('data-curScreen', screens[0]);
+		var options = $(menu_selector + ' a'); 	//Reference to the anchors in the menu
+		this.menu.children('a').first().addClass('selected');
+		this.menu.prop('data-curScreen', screens[0]);
 	
 		var screenMenuObject = this;	//Set reference; 'this' changes context in $.each()
 
@@ -66,7 +69,7 @@ var SwitchMenu = function(menu_selector, screens)
 		{
 			if(current_screen != 'skip' && current_screen != null) //Two options to skip assigning action to an anchor: 'skip' or null; the following is for non-skip anchors
 			{
-				$(current_screen).addClass(screen_class);	//Add common class
+				$(current_screen).addClass(screenMenuObject.screen_class);	//Add common class
 				
 				if(index > 0) //Make screens after first screen visible
 					$(current_screen).css('display', 'none');
@@ -79,7 +82,7 @@ var SwitchMenu = function(menu_selector, screens)
 					if($(current_screen).css('display') == 'none')
 					{
 						//Update current screen
-						menu.prop('data-curScreen', current_screen);
+						screenMenuObject.menu.prop('data-curScreen', current_screen);
 					
 						//Alter history
 						var pages = [];
@@ -88,13 +91,13 @@ var SwitchMenu = function(menu_selector, screens)
 							pages.push($(this).prop('data-curScreen'));
 						});
 
-						history.pushState(pages, null, menu.prop('data-curScreen'));
+						history.pushState(pages, null, screenMenuObject.menu.prop('data-curScreen'));
 					
 						//Switch in new screen
-						screenMenuObject.switchin(current_screen, '.' + screen_class);
+						switchin(current_screen, '.' + screenMenuObject.screen_class, screenMenuObject.settings);
 					}
 					
-					menu.children('a').removeClass('selected');
+					screenMenuObject.menu.children('a').removeClass('selected');
 					$(this).addClass('selected');
 				});
 			}
