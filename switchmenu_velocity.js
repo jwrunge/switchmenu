@@ -23,7 +23,7 @@ function switchin(switch_in, switch_out, options = null) //callback = null, trac
 		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'screen')
 			$('html, body').velocity('scroll', {duration: settings.scrollDuration, container: $(switch_in)});
 			
-		if(settings.scrollTarget == 'both' || settings.scrollTarget == 'body')
+		if((settings.scrollTarget == 'both' || settings.scrollTarget == 'body')  && $(window).scrollTop() > 10)
 		{
 			$('html, body').velocity('scroll', {
 				duration: settings.scrollDuration, 
