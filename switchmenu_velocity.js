@@ -13,10 +13,12 @@ function switchin(switch_in, switch_out, options = null) //callback = null, trac
 {		
 	currently_switching = true
 	
-	var settings = {scrollTarget: 'both', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
+	var settings = {scrollTarget: 'none', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500, startFunc: null, endFunc: null};
 	
 	if(options != null)
 		$.extend(settings, options);
+				
+	if(settings.startFunc) settings.startFunc();
 	
 	$(switch_out).velocity(settings.outAnimation, {duration: settings.outSpeed, complete: function() {
 
@@ -28,12 +30,12 @@ function switchin(switch_in, switch_out, options = null) //callback = null, trac
 			$('html, body').velocity('scroll', {
 				duration: settings.scrollDuration, 
 				complete: function() {
-					$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
+					$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false; if(settings.endFunc) settings.endFunc();}});
 				}
 			});
 		}
 		else
-			$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false;}});
+			$(switch_in).velocity(settings.inAnimation, {duration: settings.inSpeed, complete: function(){currently_switching = false; if(settings.endFunc) settings.endFunc();}});
 	}});
 }
 
@@ -48,7 +50,7 @@ var SwitchMenu = function(menu_selector, screens, ops = null)
 	
 	this.menu.addClass('switch_menu');			//Make sure the menu knows it's a menu
 	
-	this.settings = {scrollTarget: 'both', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
+	this.settings = {scrollTarget: 'none', scrollDuration: 500, outAnimation: 'transition.slideLeftBigOut', inAnimation: 'transition.slideRightBigIn', outSpeed: 500, inSpeed: 500};
 	if(ops != null)
 		$.extend(this.settings, ops);
 	
