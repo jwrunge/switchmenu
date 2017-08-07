@@ -33,6 +33,8 @@ Options can be passed in as a JavaScript object in an optional third parameter i
 * inAnimation (Velocity version only): The animation used to transition in the next screen. Can be passed the same kinds of values as outAnimation. Default is "transition.slideRightBigIn."
 * outSpeed: The duration of outAnimation. Default is 500.
 * inSpeed: The duration of inAnimation. Default is 500.
+* startFunc: Function to call pre-switch
+* endFunc: Function to call post-switch
 
 [Options Example](https://jsfiddle.net/jwrunge/Le16yuhp/)
 
